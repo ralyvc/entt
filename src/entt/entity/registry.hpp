@@ -1365,7 +1365,7 @@ public:
      */
     template<typename... Component>
     void prepare() {
-        static_assert(sizeof...(Component) > 1, "!");
+        static_assert(sizeof...(Component) > 1);
         const auto htype = handler_family::type<Component...>();
 
         if(!(htype < handlers.size())) {
@@ -1413,7 +1413,7 @@ public:
      */
     template<typename... Component>
     bool contains() const ENTT_NOEXCEPT {
-        static_assert(sizeof...(Component) > 1, "!");
+        static_assert(sizeof...(Component) > 1);
         const auto htype = handler_family::type<Component...>();
         return (htype < handlers.size() && handlers[htype]);
     }

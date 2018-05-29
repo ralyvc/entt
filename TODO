@@ -11,5 +11,4 @@
 * can we do more for shared libraries? who knows... see #144
 * work stealing job system (see #100)
 * reflection system (maybe)
-* C++17. That's all.
 * AOB
