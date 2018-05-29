@@ -673,8 +673,8 @@ TEST(DefaultRegistry, ComponentSignals) {
     entt::DefaultRegistry registry;
     Listener listener;
 
-    registry.construction<int>().connect<Listener, &Listener::incrComponent<int>>(&listener);
-    registry.destruction<int>().connect<Listener, &Listener::decrComponent<int>>(&listener);
+    registry.construction<int>().connect<&Listener::incrComponent<int>>(&listener);
+    registry.destruction<int>().connect<&Listener::decrComponent<int>>(&listener);
 
     auto e0 = registry.create();
     auto e1 = registry.create();
@@ -690,20 +690,20 @@ TEST(DefaultRegistry, ComponentSignals) {
     ASSERT_EQ(listener.counter, 1);
     ASSERT_EQ(listener.last, e0);
 
-    registry.destruction<int>().disconnect<Listener, &Listener::decrComponent<int>>(&listener);
+    registry.destruction<int>().disconnect<&Listener::decrComponent<int>>(&listener);
     registry.remove<int>(e1);
 
     ASSERT_EQ(listener.counter, 1);
     ASSERT_EQ(listener.last, e0);
 
-    registry.construction<int>().disconnect<Listener, &Listener::incrComponent<int>>(&listener);
+    registry.construction<int>().disconnect<&Listener::incrComponent<int>>(&listener);
     registry.assign<int>(e1);
 
     ASSERT_EQ(listener.counter, 1);
     ASSERT_EQ(listener.last, e0);
 
-    registry.construction<int>().connect<Listener, &Listener::incrComponent<int>>(&listener);
-    registry.destruction<int>().connect<Listener, &Listener::decrComponent<int>>(&listener);
+    registry.construction<int>().connect<&Listener::incrComponent<int>>(&listener);
+    registry.destruction<int>().connect<&Listener::decrComponent<int>>(&listener);
     registry.assign<int>(e0);
     registry.reset<int>(e1);
 
@@ -727,8 +727,8 @@ TEST(DefaultRegistry, TagSignals) {
     entt::DefaultRegistry registry;
     Listener listener;
 
-    registry.construction<int>(entt::tag_t{}).connect<Listener, &Listener::incrTag<int>>(&listener);
-    registry.destruction<int>(entt::tag_t{}).connect<Listener, &Listener::decrTag<int>>(&listener);
+    registry.construction<int>(entt::tag_t{}).connect<&Listener::incrTag<int>>(&listener);
+    registry.destruction<int>(entt::tag_t{}).connect<&Listener::decrTag<int>>(&listener);
 
     auto e0 = registry.create();
     registry.assign<int>(entt::tag_t{}, e0);
@@ -743,16 +743,16 @@ TEST(DefaultRegistry, TagSignals) {
     ASSERT_EQ(listener.counter, 0);
     ASSERT_EQ(listener.last, e1);
 
-    registry.construction<int>(entt::tag_t{}).disconnect<Listener, &Listener::incrTag<int>>(&listener);
-    registry.destruction<int>(entt::tag_t{}).disconnect<Listener, &Listener::decrTag<int>>(&listener);
+    registry.construction<int>(entt::tag_t{}).disconnect<&Listener::incrTag<int>>(&listener);
+    registry.destruction<int>(entt::tag_t{}).disconnect<&Listener::decrTag<int>>(&listener);
     registry.assign<int>(entt::tag_t{}, e0);
     registry.remove<int>();
 
     ASSERT_EQ(listener.counter, 0);
     ASSERT_EQ(listener.last, e1);
 
-    registry.construction<int>(entt::tag_t{}).connect<Listener, &Listener::incrTag<int>>(&listener);
-    registry.destruction<int>(entt::tag_t{}).connect<Listener, &Listener::decrTag<int>>(&listener);
+    registry.construction<int>(entt::tag_t{}).connect<&Listener::incrTag<int>>(&listener);
+    registry.destruction<int>(entt::tag_t{}).connect<&Listener::decrTag<int>>(&listener);
 
     registry.assign<int>(entt::tag_t{}, e0);
     registry.destroy(e0);
