@@ -557,7 +557,7 @@ class View final {
         auto begin = cpool.view_type::cbegin();
 
         // we can directly use the raw iterators if pools are ordered
-        while(begin != end && std::min({ (*(std::get<Indexes>(data)++) == *begin)... })) {
+        while(((begin != end) && ... && (begin == *(std::get<Indexes+1>(data)++)))) {
             func(*(begin++), *(std::get<component_iterator_type<Component>>(raw)++)...);
         }
 
@@ -567,7 +567,7 @@ class View final {
             const auto it = std::get<component_iterator_type<Comp>>(raw)++;
             const auto sz = size_type(entity & traits_type::entity_mask);
 
-            if(sz < extent && std::all_of(other.cbegin(), other.cend(), [entity](const view_type *view) { return view->fast(entity); })) {
+            if(((sz < extent) && ... && std::get<Indexes>(other)->fast(entity))) {
                 // avoided at least the indirection due to the sparse set for the pivot type (see get for more details)
                 func(entity, get<Comp, Component>(it, entity)...);
             }
@@ -597,7 +597,7 @@ public:
      * @return True if the view is definitely empty, false otherwise.
      */
     bool empty() const ENTT_NOEXCEPT {
-        return std::max({ pool<Component>().empty()... });
+        return (pool<Component>().empty() || ...);
     }
 
     /**
@@ -721,7 +721,7 @@ public:
     bool contains(const entity_type entity) const ENTT_NOEXCEPT {
         const auto sz = size_type(entity & traits_type::entity_mask);
         const auto extent = std::min({ pool<Component>().extent()... });
-        return sz < extent && std::min({ (pool<Component>().has(entity) && (pool<Component>().data()[pool<Component>().view_type::get(entity)] == entity))... });
+        return ((sz < extent) && ... && (pool<Component>().has(entity) && (pool<Component>().data()[pool<Component>().view_type::get(entity)] == entity)));
     }
 
     /**
