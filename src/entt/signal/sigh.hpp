@@ -138,7 +138,7 @@ class Sink<Ret(Args...)> final {
     using call_type = std::pair<void *, proto_fn_type *>;
 
     template<typename Class, typename R, typename... A>
-    static Class clazz(R(Class ::*)(A...));
+    static Class * clazz(R(Class ::*)(A...));
 
     template<auto Member>
     using instance_type = decltype(clazz(Member));
@@ -146,7 +146,7 @@ class Sink<Ret(Args...)> final {
     template<auto Function>
     static Ret proto([[maybe_unused]] void *instance, Args... args) {
         if constexpr(std::is_member_function_pointer_v<decltype(Function)>) {
-            return std::invoke(Function, static_cast<instance_type<Function> *>(instance), args...);
+            return std::invoke(Function, static_cast<instance_type<Function>>(instance), args...);
         } else {
             return std::invoke(Function, args...);
         }
