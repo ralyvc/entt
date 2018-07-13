@@ -133,7 +133,7 @@ TEST(Benchmark, IterateSingleComponentRaw1M) {
 }
 
 TEST(Benchmark, IterateSingleComponentRuntime1M) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, one component, runtime view" << std::endl;
 
@@ -143,7 +143,7 @@ TEST(Benchmark, IterateSingleComponentRuntime1M) {
      }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = { registry.type<Position>() };
 
         Timer timer;
@@ -257,7 +257,7 @@ TEST(Benchmark, IterateTwoComponentsPersistent1M) {
 }
 
 TEST(Benchmark, IterateTwoComponentsRuntime1M) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
     registry.prepare<Position, Velocity>();
 
     std::cout << "Iterating over 1000000 entities, two components, runtime view" << std::endl;
@@ -269,7 +269,7 @@ TEST(Benchmark, IterateTwoComponentsRuntime1M) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = { registry.type<Position>(), registry.type<Velocity>() };
 
         Timer timer;
@@ -285,7 +285,7 @@ TEST(Benchmark, IterateTwoComponentsRuntime1M) {
 }
 
 TEST(Benchmark, IterateTwoComponentsRuntime1MHalf) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, two components, half of the entities have all the components, runtime view" << std::endl;
 
@@ -299,7 +299,7 @@ TEST(Benchmark, IterateTwoComponentsRuntime1MHalf) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = { registry.type<Position>(), registry.type<Velocity>() };
 
         Timer timer;
@@ -315,7 +315,7 @@ TEST(Benchmark, IterateTwoComponentsRuntime1MHalf) {
 }
 
 TEST(Benchmark, IterateTwoComponentsRuntime1MOne) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, two components, only one entity has all the components, runtime view" << std::endl;
 
@@ -329,7 +329,7 @@ TEST(Benchmark, IterateTwoComponentsRuntime1MOne) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = { registry.type<Position>(), registry.type<Velocity>() };
 
         Timer timer;
@@ -456,7 +456,7 @@ TEST(Benchmark, IterateFiveComponentsPersistent1M) {
 }
 
 TEST(Benchmark, IterateFiveComponentsRuntime1M) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
     registry.prepare<Position, Velocity, Comp<1>, Comp<2>, Comp<3>>();
 
     std::cout << "Iterating over 1000000 entities, five components, runtime view" << std::endl;
@@ -471,7 +471,7 @@ TEST(Benchmark, IterateFiveComponentsRuntime1M) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
@@ -496,7 +496,7 @@ TEST(Benchmark, IterateFiveComponentsRuntime1M) {
 }
 
 TEST(Benchmark, IterateFiveComponentsRuntime1MHalf) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, five components, half of the entities have all the components, runtime view" << std::endl;
 
@@ -513,7 +513,7 @@ TEST(Benchmark, IterateFiveComponentsRuntime1MHalf) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
@@ -538,7 +538,7 @@ TEST(Benchmark, IterateFiveComponentsRuntime1MHalf) {
 }
 
 TEST(Benchmark, IterateFiveComponentsRuntime1MOne) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, five components, only one entity has all the components, runtime view" << std::endl;
 
@@ -555,7 +555,7 @@ TEST(Benchmark, IterateFiveComponentsRuntime1MOne) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
@@ -711,7 +711,7 @@ TEST(Benchmark, IterateTenComponentsPersistent1M) {
 }
 
 TEST(Benchmark, IterateTenComponentsRuntime1M) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
     registry.prepare<Position, Velocity, Comp<1>, Comp<2>, Comp<3>, Comp<4>, Comp<5>, Comp<6>, Comp<7>, Comp<8>>();
 
     std::cout << "Iterating over 1000000 entities, ten components, runtime view" << std::endl;
@@ -731,7 +731,7 @@ TEST(Benchmark, IterateTenComponentsRuntime1M) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
@@ -766,7 +766,7 @@ TEST(Benchmark, IterateTenComponentsRuntime1M) {
 }
 
 TEST(Benchmark, IterateTenComponentsRuntime1MHalf) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, ten components, half of the entities have all the components, runtime view" << std::endl;
 
@@ -788,7 +788,7 @@ TEST(Benchmark, IterateTenComponentsRuntime1MHalf) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
@@ -823,7 +823,7 @@ TEST(Benchmark, IterateTenComponentsRuntime1MHalf) {
 }
 
 TEST(Benchmark, IterateTenComponentsRuntime1MOne) {
-    entt::DefaultRegistry registry;
+    entt::Registry<> registry;
 
     std::cout << "Iterating over 1000000 entities, ten components, only one entity has all the components, runtime view" << std::endl;
 
@@ -845,7 +845,7 @@ TEST(Benchmark, IterateTenComponentsRuntime1MOne) {
     }
 
     auto test = [&registry](auto func) {
-        using component_type = typename entt::DefaultRegistry::component_type;
+        using component_type = typename entt::Registry<>::component_type;
         component_type types[] = {
             registry.type<Position>(),
             registry.type<Velocity>(),
