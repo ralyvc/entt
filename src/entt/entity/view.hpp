@@ -560,7 +560,7 @@ class View final {
         auto begin = cpool.view_type::cbegin();
 
         // we can directly use the raw iterators if pools are ordered
-        while(((begin != end) && ... && (begin == *(std::get<Indexes+1>(data)++)))) {
+        while(((begin != end) && ... && (*begin == *(std::get<Indexes>(data)++)))) {
             func(*(begin++), *(std::get<component_iterator_type<Component>>(raw)++)...);
         }
 
