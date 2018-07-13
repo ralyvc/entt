@@ -45,7 +45,7 @@ class Registry {
     using signal_type = SigH<void(Registry &, const Entity)>;
     using traits_type = entt_traits<Entity>;
 
-    template<auto *Type, typename... Component>
+    template<typename handler_family::family_type(*Type)(), typename... Component>
     static void creating(Registry &registry, const Entity entity) {
         if(registry.has<Component...>(entity)) {
             registry.handlers[Type()]->construct(entity);
