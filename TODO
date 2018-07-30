@@ -12,3 +12,4 @@
 * work stealing job system (see #100)
 * reflection system (maybe)
 * AOB
+* static stuff vs inline variables (see SO questions)
