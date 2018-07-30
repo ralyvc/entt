@@ -166,8 +166,8 @@ public:
      * @tparam Function A valid free function pointer.
      */
     template<auto Function>
-    std::enable_if_t<std::is_invocable_r_v<Ret, decltype(Function), Args...>, void>
-    connect() {
+    void connect() {
+        static_assert(std::is_invocable_r_v<Ret, decltype(Function), Args...>);
         disconnect<Function>();
         calls.emplace_back(nullptr, &proto<Function>);
     }
@@ -186,8 +186,8 @@ public:
      * @param instance A valid instance of type pointer to `Class`.
      */
     template <auto Member, typename Class>
-    std::enable_if_t<std::is_invocable_r_v<Ret, decltype(Member), Class, Args...>, void>
-    connect(Class *instance) {
+    void connect(Class *instance) {
+        static_assert(std::is_invocable_r_v<Ret, decltype(Member), Class, Args...>);
         disconnect<Member>(instance);
         calls.emplace_back(instance, &proto<Member>);
     }
@@ -215,8 +215,8 @@ public:
      * @tparam Function A valid free function pointer.
      */
     template<auto Function>
-    std::enable_if_t<std::is_invocable_r_v<Ret, decltype(Function), Args...>, void>
-    disconnect() {
+    void disconnect() {
+        static_assert(std::is_invocable_r_v<Ret, decltype(Function), Args...>);
         call_type target{nullptr, &proto<Function>};
         calls.erase(std::remove(calls.begin(), calls.end(), std::move(target)), calls.end());
     }
@@ -228,8 +228,8 @@ public:
      * @param instance A valid instance of type pointer to `Class`.
      */
     template<auto Member, typename Class>
-    std::enable_if_t<std::is_invocable_r_v<Ret, decltype(Member), Class, Args...>, void>
-    disconnect(Class *instance) {
+    void disconnect(Class *instance) {
+        static_assert(std::is_invocable_r_v<Ret, decltype(Member), Class, Args...>);
         call_type target{instance, &proto<Member>};
         calls.erase(std::remove(calls.begin(), calls.end(), std::move(target)), calls.end());
     }
