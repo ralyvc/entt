@@ -73,7 +73,7 @@ class Dispatcher final {
 
     template<typename Event>
     SignalWrapper<Event> & wrapper() {
-        const auto type = event_family::type<Event>();
+        const auto type = event_family::type<Event>;
 
         if(!(type < wrappers.size())) {
             wrappers.resize(type + 1);

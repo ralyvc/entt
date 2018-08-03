@@ -138,10 +138,10 @@ class Sink<Ret(Args...)> final {
     using call_type = std::pair<void *, proto_fn_type *>;
 
     template<typename Class, typename R, typename... A>
-    static Class * clazz(R(Class ::*)(A...));
+    Class * clazz(R(Class ::*)(A...));
 
     template<auto Member>
-    using instance_type = decltype(clazz(Member));
+    using instance_type = decltype(std::declval<Sink>().clazz(Member));
 
     template<auto Function>
     static Ret proto([[maybe_unused]] void *instance, Args... args) {

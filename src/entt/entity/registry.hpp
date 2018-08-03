@@ -45,16 +45,16 @@ class Registry {
     using signal_type = SigH<void(Registry &, const Entity)>;
     using traits_type = entt_traits<Entity>;
 
-    template<typename handler_family::family_type(*Type)(), typename... Component>
+    template<auto *Type, typename... Component>
     static void creating(Registry &registry, const Entity entity) {
         if(registry.has<Component...>(entity)) {
-            registry.handlers[Type()]->construct(entity);
+            registry.handlers[*Type]->construct(entity);
         }
     }
 
     template<typename... Component>
     static void destroying(Registry &registry, const Entity entity) {
-        auto &handler = *registry.handlers[handler_family::type<Component...>()];
+        auto &handler = *registry.handlers[handler_family::type<Component...>];
         return handler.has(entity) ? handler.destroy(entity) : void();
     }
 
@@ -76,7 +76,7 @@ class Registry {
 
     template<typename Comp, std::size_t Index, typename... Component, std::size_t... Indexes>
     void connect(std::index_sequence<Indexes...>) {
-        auto &cpool = pools[component_family::type<Comp>()];
+        auto &cpool = pools[component_family::type<Comp>];
         std::get<1>(cpool).sink().template connect<&Registry::creating<&handler_family::type<Component...>, std::tuple_element_t<(Indexes < Index ? Indexes : (Indexes+1)), std::tuple<Component...>>...>>();
         std::get<2>(cpool).sink().template connect<&Registry::destroying<Component...>>();
     }
@@ -89,7 +89,7 @@ class Registry {
 
     template<typename Comp, std::size_t Index, typename... Component, std::size_t... Indexes>
     void disconnect(std::index_sequence<Indexes...>) {
-        auto &cpool = pools[component_family::type<Comp>()];
+        auto &cpool = pools[component_family::type<Comp>];
         std::get<1>(cpool).sink().template disconnect<&Registry::creating<&handler_family::type<Component...>, std::tuple_element_t<(Indexes < Index ? Indexes : (Indexes+1)), std::tuple<Component...>>...>>();
         std::get<2>(cpool).sink().template disconnect<&Registry::destroying<Component...>>();
     }
@@ -102,14 +102,14 @@ class Registry {
 
     template<typename Component>
     inline bool managed() const ENTT_NOEXCEPT {
-        const auto ctype = component_family::type<Component>();
+        const auto ctype = component_family::type<Component>;
         return ctype < pools.size() && std::get<0>(pools[ctype]);
     }
 
     template<typename Component>
     inline const SparseSet<Entity, Component> & pool() const ENTT_NOEXCEPT {
         assert(managed<Component>());
-        return static_cast<SparseSet<Entity, Component> &>(*std::get<0>(pools[component_family::type<Component>()]));
+        return static_cast<SparseSet<Entity, Component> &>(*std::get<0>(pools[component_family::type<Component>]));
     }
 
     template<typename Component>
@@ -119,7 +119,7 @@ class Registry {
 
     template<typename Component>
     auto & assure() {
-        const auto ctype = component_family::type<Component>();
+        const auto ctype = component_family::type<Component>;
 
         if(!(ctype < pools.size())) {
             pools.resize(ctype + 1);
@@ -137,7 +137,7 @@ class Registry {
 
     template<typename Tag>
     auto & assure(tag_t) {
-        const auto ttype = tag_family::type<Tag>();
+        const auto ttype = tag_family::type<Tag>;
 
         if(!(ttype < tags.size())) {
             tags.resize(ttype + 1);
@@ -187,7 +187,7 @@ public:
      */
     template<typename Tag>
     static tag_type type(tag_t) ENTT_NOEXCEPT {
-        return tag_family::type<Tag>();
+        return tag_family::type<Tag>;
     }
 
     /**
@@ -204,7 +204,7 @@ public:
      */
     template<typename Component>
     static component_type type() ENTT_NOEXCEPT {
-        return component_family::type<Component>();
+        return component_family::type<Component>;
     }
 
     /**
@@ -632,7 +632,7 @@ public:
     template<typename Tag>
     void remove() {
         if(has<Tag>()) {
-            auto &tup = tags[tag_family::type<Tag>()];
+            auto &tup = tags[tag_family::type<Tag>];
             auto &tag = std::get<0>(tup);
             std::get<2>(tup).publish(*this, tag->entity);
             tag.reset();
@@ -656,7 +656,7 @@ public:
     void remove(const entity_type entity) {
         assert(valid(entity));
         assert(managed<Component>());
-        std::get<2>(pools[component_family::type<Component>()]).publish(*this, entity);
+        std::get<2>(pools[component_family::type<Component>]).publish(*this, entity);
         pool<Component>().destroy(entity);
     }
 
@@ -667,7 +667,7 @@ public:
      */
     template<typename Tag>
     bool has() const ENTT_NOEXCEPT {
-        const auto ttype = tag_family::type<Tag>();
+        const auto ttype = tag_family::type<Tag>;
         bool found = false;
 
         if(ttype < tags.size()) {
@@ -730,7 +730,7 @@ public:
     template<typename Tag>
     const Tag & get() const ENTT_NOEXCEPT {
         assert(has<Tag>());
-        return static_cast<Attaching<Tag> *>(std::get<0>(tags[tag_family::type<Tag>()]).get())->tag;
+        return static_cast<Attaching<Tag> *>(std::get<0>(tags[tag_family::type<Tag>]).get())->tag;
     }
 
     /**
@@ -867,7 +867,7 @@ public:
     entity_type move(const entity_type entity) ENTT_NOEXCEPT {
         assert(valid(entity));
         assert(has<Tag>());
-        auto &tag = std::get<0>(tags[tag_family::type<Tag>()]);
+        auto &tag = std::get<0>(tags[tag_family::type<Tag>]);
         const auto owner = tag->entity;
         tag->entity = entity;
         return owner;
@@ -888,7 +888,7 @@ public:
     template<typename Tag>
     entity_type attachee() const ENTT_NOEXCEPT {
         assert(has<Tag>());
-        return std::get<0>(tags[tag_family::type<Tag>()])->entity;
+        return std::get<0>(tags[tag_family::type<Tag>])->entity;
     }
 
     /**
@@ -1333,7 +1333,7 @@ public:
     template<typename... Component>
     void prepare() {
         static_assert(sizeof...(Component) > 1);
-        const auto htype = handler_family::type<Component...>();
+        const auto htype = handler_family::type<Component...>;
 
         if(!(htype < handlers.size())) {
             handlers.resize(htype + 1);
@@ -1369,7 +1369,7 @@ public:
     void discard() {
         if(contains<Component...>()) {
             disconnect<Component...>(std::make_index_sequence<sizeof...(Component)>{});
-            handlers[handler_family::type<Component...>()].reset();
+            handlers[handler_family::type<Component...>].reset();
         }
     }
 
@@ -1381,7 +1381,7 @@ public:
     template<typename... Component>
     bool contains() const ENTT_NOEXCEPT {
         static_assert(sizeof...(Component) > 1);
-        const auto htype = handler_family::type<Component...>();
+        const auto htype = handler_family::type<Component...>;
         return (htype < handlers.size() && handlers[htype]);
     }
 
@@ -1428,7 +1428,7 @@ public:
     PersistentView<Entity, Component...> view(persistent_t) {
         prepare<Component...>();
         (assure<Component>(), ...);
-        return PersistentView{*handlers[handler_family::type<Component...>()], pool<Component>()...};
+        return PersistentView{*handlers[handler_family::type<Component...>], pool<Component>()...};
     }
 
     /**
