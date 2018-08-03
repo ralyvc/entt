@@ -40,10 +40,10 @@ class Delegate<Ret(Args...)> final {
     using stub_type = std::pair<void *, proto_fn_type *>;
 
     template<typename Class, typename R, typename... A>
-    Class * clazz(R(Class ::*)(A...));
+    static Class * clazz(R(Class ::*)(A...));
 
     template<auto Member>
-    using instance_type = decltype(std::declval<Delegate>().clazz(Member));
+    using instance_type = decltype(clazz(Member));
 
     template<auto Function>
     static Ret proto([[maybe_unused]] void *instance, Args... args) {
