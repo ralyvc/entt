@@ -199,7 +199,7 @@ TEST(Registry, Functionalities) {
 }
 
 TEST(Registry, Identifiers) {
-    entt::Registry registry;
+    entt::Registry<> registry;
     const auto pre = registry.create();
 
     ASSERT_EQ(pre, registry.entity(pre));
